@@ -25,7 +25,7 @@ class Client extends \SoapClient
             $this->ntlm = true;
 
             $protocol = strtolower(parse_url($wsdl, PHP_URL_SCHEME));
-            if ($protocol !== 'http' || $protocol !== 'https') {
+            if ($protocol !== 'http' && $protocol !== 'https') {
                 throw new \InvalidArgumentException("Unknown protocol in wsdl URL: $protocol");
             }
 
