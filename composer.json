@@ -1,0 +1,10 @@
+{
+  "name": "lfi/lfi-soap",
+  "description": "An NTLM-capable SOAP client",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "require": {
+    "ext-curl": "*",
+    "ext-soap": "*"
+  }
+}
