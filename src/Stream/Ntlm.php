@@ -57,7 +57,7 @@ class Ntlm
      */
     public function stream_read($count)
     {
-        if(\strlen($this->buffer) == 0) {
+        if (\strlen($this->buffer) == 0) {
             return false;
         }
 
@@ -76,7 +76,7 @@ class Ntlm
      */
     public function stream_write($data)
     {
-        if(\strlen($this->buffer) == 0) {
+        if (\strlen($this->buffer) == 0) {
             return false;
         }
 
@@ -89,7 +89,7 @@ class Ntlm
      */
     public function stream_eof()
     {
-        if($this->pos > \strlen($this->buffer)) {
+        if ($this->pos > \strlen($this->buffer)) {
             return true;
         }
         return false;
