@@ -155,6 +155,8 @@ class Ntlm
         \curl_setopt($this->ch, \CURLOPT_HTTPAUTH, \CURLAUTH_NTLM);
         \curl_setopt($this->ch, \CURLOPT_USERPWD, self::$user.':'.self::$password);
 
+        $this->buffer = curl_exec($this->ch);
+
         $this->pos = 0;
     }
 }
