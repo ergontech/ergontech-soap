@@ -9,7 +9,7 @@
   },
   "autoload" : {
     "psr-4": {
-      "Lfi\\Soap\\": "src/"
+      "ErgonTech\\Soap\\": "src/"
     }
   }
 }
