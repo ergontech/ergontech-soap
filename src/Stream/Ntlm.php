@@ -1,10 +1,10 @@
 <?php
 
-namespace Lfi\Soap\Stream;
+namespace ErgonTech\Soap\Stream;
 
 /**
  * Class NtlmStream
- * @package Lfi\Ax\Soap
+ * @package ErgonTech\Soap
  * See http://php.net/manual/en/class.streamwrapper.php
  */
 class Ntlm
