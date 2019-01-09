@@ -1,8 +1,8 @@
 <?php
 
-namespace Lfi\Soap;
+namespace ErgonTech\Soap;
 
-use Lfi\Soap\Stream\Ntlm;
+use ErgonTech\Soap\Stream\Ntlm;
 
 class Client extends \SoapClient
 {
