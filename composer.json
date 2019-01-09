@@ -1,5 +1,5 @@
 {
-  "name": "lfi/lfi-soap",
+  "name": "ergontech/ergontech-soap",
   "description": "An NTLM-capable SOAP client",
   "minimum-stability": "stable",
   "license": "proprietary",
