@@ -7,7 +7,7 @@ use ErgonTech\Soap\Stream\Ntlm;
 class Client extends \SoapClient
 {
     const NTLM_USERNAME_OPTION_KEY = 'ntlm_username';
-    const NTLM_PASSWROD_OPTION_KEY = 'ntlm_password';
+    const NTLM_PASSWORD_OPTION_KEY = 'ntlm_password';
 
     private $options;
 
@@ -18,7 +18,7 @@ class Client extends \SoapClient
         $options = $options ?: [];
         if ($wsdl === null
             || empty($options[self::NTLM_USERNAME_OPTION_KEY] )
-            || empty($options[self::NTLM_PASSWROD_OPTION_KEY])  ) {
+            || empty($options[self::NTLM_PASSWORD_OPTION_KEY])  ) {
             parent::__construct($wsdl, $options);
         } else {
             $this->options = $options;
