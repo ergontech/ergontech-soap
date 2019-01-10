@@ -67,7 +67,7 @@ class Client extends \SoapClient
 
         if($this->ntlm){
             \curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
-            \curl_setopt($ch, CURLOPT_USERPWD, $this->options[self::NTLM_USERNAME_OPTION_KEY].':'. $this->options[self::NTLM_PASSWROD_OPTION_KEY]);
+            \curl_setopt($ch, CURLOPT_USERPWD, $this->options[self::NTLM_USERNAME_OPTION_KEY].':'. $this->options[self::NTLM_PASSWORD_OPTION_KEY]);
         }
 
         $response = \curl_exec($ch);
