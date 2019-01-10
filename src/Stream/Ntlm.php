@@ -15,6 +15,7 @@ class Ntlm
     private $opened_path;
     private $buffer;
     private $pos;
+    private $ch;
 
     public static $user;
     public static $password;
@@ -22,11 +23,11 @@ class Ntlm
     /**
      * Open the stream
      *
-     * @param unknown_type $path
-     * @param unknown_type $mode
-     * @param unknown_type $options
-     * @param unknown_type $opened_path
-     * @return unknown
+     * @param  $path
+     * @param  $mode
+     * @param  $options
+     * @param  $opened_path
+     * @return bool
      */
     public function stream_open($path, $mode, $options, $opened_path)
     {
@@ -71,7 +72,7 @@ class Ntlm
     /**
      * write the stream
      *
-     * @param int $count number of bytes to read
+     * @param $data number of bytes to read
      * @return bool content from pos to count
      */
     public function stream_write($data)
@@ -141,7 +142,7 @@ class Ntlm
 
     /**
      * Create the buffer by requesting the url through cURL
-     * @param unknown_type $path
+     * @param $path
      */
     private function createBuffer($path)
     {
@@ -155,7 +156,7 @@ class Ntlm
         \curl_setopt($this->ch, \CURLOPT_HTTPAUTH, \CURLAUTH_NTLM);
         \curl_setopt($this->ch, \CURLOPT_USERPWD, self::$user.':'.self::$password);
 
-        $this->buffer = curl_exec($this->ch);
+        $this->buffer = \curl_exec($this->ch);
 
         $this->pos = 0;
     }

@@ -24,7 +24,7 @@ class Client extends \SoapClient
             $this->options = $options;
             $this->ntlm = true;
 
-            $protocol = strtolower(parse_url($wsdl, PHP_URL_SCHEME));
+            $protocol = \strtolower(parse_url($wsdl, PHP_URL_SCHEME));
             if ($protocol !== 'http' && $protocol !== 'https') {
                 throw new \InvalidArgumentException("Unknown protocol in wsdl URL: $protocol");
             }
@@ -52,22 +52,22 @@ class Client extends \SoapClient
         $this->__last_request = $request;
 
         $ch = \curl_init($location);
-        \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        \curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
 
-        \curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        \curl_setopt($ch, \CURLOPT_HTTPHEADER, [
             'Method: POST',
             'User-Agent: PHP-SOAP-CURL',
             'Content-Type: text/xml; charset=utf-8',
             'SOAPAction: "' . $action . '"',
         ]);
 
-        \curl_setopt($ch, CURLOPT_POST, true);
-        \curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-        \curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        \curl_setopt($ch, \CURLOPT_POST, true);
+        \curl_setopt($ch, \CURLOPT_POSTFIELDS, $request);
+        \curl_setopt($ch, \CURLOPT_HTTP_VERSION, \CURL_HTTP_VERSION_1_1);
 
         if($this->ntlm){
-            \curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_NTLM);
-            \curl_setopt($ch, CURLOPT_USERPWD, $this->options[self::NTLM_USERNAME_OPTION_KEY].':'. $this->options[self::NTLM_PASSWORD_OPTION_KEY]);
+            \curl_setopt($ch, \CURLOPT_HTTPAUTH, \CURLAUTH_NTLM);
+            \curl_setopt($ch, \CURLOPT_USERPWD, $this->options[self::NTLM_USERNAME_OPTION_KEY].':'. $this->options[self::NTLM_PASSWORD_OPTION_KEY]);
         }
 
         $response = \curl_exec($ch);
