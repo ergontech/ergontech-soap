@@ -30,7 +30,7 @@ class Client extends \SoapClient
             }
 
             NTLM::$user	= $options[self::NTLM_USERNAME_OPTION_KEY];
-            NTLM::$password = $options[self::NTLM_PASSWROD_OPTION_KEY];
+            NTLM::$password = $options[self::NTLM_PASSWORD_OPTION_KEY];
 
             \stream_wrapper_unregister($protocol);
 
