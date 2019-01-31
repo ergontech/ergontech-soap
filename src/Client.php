@@ -3,6 +3,7 @@
 namespace ErgonTech\Soap;
 
 use ErgonTech\Soap\Stream\Ntlm;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class Client extends \SoapClient
 {
@@ -22,11 +23,12 @@ class Client extends \SoapClient
      */
     protected $removeNsFromXsiTypes = false;
 
+
     public function __construct($wsdl, array $options = null)
     {
         $options = $options ?: [];
         if (array_key_exists(self::REMOVE_NS_FROM_XSI_TYPES, $options)) {
-            $this->removeNsFromXsiTypes = (bool) $options[self::REMOVE_NS_FROM_XSI_TYPES];
+            $this->setRemoveNsFromXsiTypes($options[self::REMOVE_NS_FROM_XSI_TYPES]);
             unset($options[self::REMOVE_NS_FROM_XSI_TYPES]);
         }
 
@@ -58,12 +60,28 @@ class Client extends \SoapClient
     }
 
     /**
+     * @param bool $trueOrFalse
+     */
+    public function setRemoveNsFromXsiTypes($trueOrFalse)
+    {
+        $this->removeNsFromXsiTypes = (bool) $trueOrFalse;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRemoveNsFromXsiTypes()
+    {
+        return $this->removeNsFromXsiTypes;
+    }
+
+    /**
      * (non-PHPdoc)
      * @see SoapClient::__doRequest()
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
-        if ($this->removeNsFromXsiTypes) {
+        if ($this->getRemoveNsFromXsiTypes()) {
             $request = $this->removeNameSpacedXsiObjectAttributeValues($request);
         }
 
