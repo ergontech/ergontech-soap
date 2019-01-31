@@ -8,14 +8,28 @@ class Client extends \SoapClient
 {
     const NTLM_USERNAME_OPTION_KEY = 'ntlm_username';
     const NTLM_PASSWORD_OPTION_KEY = 'ntlm_password';
+    const REMOVE_NS_FROM_XSI_TYPES = 'remove_ns_from_xsi_types';
 
     private $options;
 
+    /**
+     * @var bool
+     */
     protected $ntlm = false;
+
+    /**
+     * @var bool
+     */
+    protected $removeNsFromXsiTypes = false;
 
     public function __construct($wsdl, array $options = null)
     {
         $options = $options ?: [];
+        if (array_key_exists(self::REMOVE_NS_FROM_XSI_TYPES, $options)) {
+            $this->removeNsFromXsiTypes = (bool) $options[self::REMOVE_NS_FROM_XSI_TYPES];
+            unset($options[self::REMOVE_NS_FROM_XSI_TYPES]);
+        }
+
         if ($wsdl === null
             || empty($options[self::NTLM_USERNAME_OPTION_KEY] )
             || empty($options[self::NTLM_PASSWORD_OPTION_KEY])  ) {
@@ -49,7 +63,9 @@ class Client extends \SoapClient
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
-        $request = $this->removeNameSpacedXsiObjectAttributeValues($request);
+        if ($this->removeNsFromXsiTypes) {
+            $request = $this->removeNameSpacedXsiObjectAttributeValues($request);
+        }
 
         $this->__last_request = $request;
 
