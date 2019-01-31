@@ -3,7 +3,6 @@
 namespace ErgonTech\Soap;
 
 use ErgonTech\Soap\Stream\Ntlm;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class Client extends \SoapClient
 {
@@ -22,7 +21,6 @@ class Client extends \SoapClient
      * @var bool
      */
     protected $removeNsFromXsiTypes = false;
-
 
     public function __construct($wsdl, array $options = null)
     {
