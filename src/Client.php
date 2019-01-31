@@ -49,6 +49,8 @@ class Client extends \SoapClient
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
+        $request = $this->removeNameSpacedXsiObjectAttributeValues($request);
+
         $this->__last_request = $request;
 
         $ch = \curl_init($location);
@@ -73,6 +75,37 @@ class Client extends \SoapClient
         $response = \curl_exec($ch);
 
         return $response;
+    }
+
+    /**
+     * Finds any Elements with attribute xsi:object set, checks for namespaced attribute values, and moves that namespace to the parent node
+     * E.g. this:     <some_element xsi:type="some_ns:some_type" />
+     * would become:  <some_element xsi:type="some_type" xmlns="http://some_ns_uri"/>
+     * @param string $request
+     * @return string
+     */
+    public function removeNameSpacedXsiObjectAttributeValues(string $request)
+    {
+        $doc = new \DOMDocument();
+        $doc->loadXML($request);
+        $xpath = new \DOMXPath($doc);
+        $namespaces = $xpath->query('namespace::*', $doc->documentElement);
+        foreach ($namespaces as $node) {
+            /** @var \DOMNameSpaceNode  $node */
+            $prefix = $node->prefix;
+            $uri = $node->namespaceURI;
+            $elementsToFix = $xpath->query("//*[starts-with(@xsi:type, '$prefix')]");
+            foreach ($elementsToFix as $element) {
+                /** @var \DOMElement $element */
+                //set the namespace on the node
+                $element->setAttribute('xmlns', $uri);
+                //remove the namespace prefix from the xsi:type value
+                $newXsiType =  str_replace($prefix . ':', '',  $element->getAttribute('xsi:type'));
+                $element->setAttribute('xsi:type', $newXsiType);
+            }
+        }
+        return $doc->saveXML();
+
     }
 
 }
