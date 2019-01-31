@@ -8,14 +8,28 @@ class Client extends \SoapClient
 {
     const NTLM_USERNAME_OPTION_KEY = 'ntlm_username';
     const NTLM_PASSWORD_OPTION_KEY = 'ntlm_password';
+    const REMOVE_NS_FROM_XSI_TYPES = 'remove_ns_from_xsi_types';
 
     private $options;
 
+    /**
+     * @var bool
+     */
     protected $ntlm = false;
+
+    /**
+     * @var bool
+     */
+    protected $removeNsFromXsiTypes = false;
 
     public function __construct($wsdl, array $options = null)
     {
         $options = $options ?: [];
+        if (array_key_exists(self::REMOVE_NS_FROM_XSI_TYPES, $options)) {
+            $this->setRemoveNsFromXsiTypes($options[self::REMOVE_NS_FROM_XSI_TYPES]);
+            unset($options[self::REMOVE_NS_FROM_XSI_TYPES]);
+        }
+
         if ($wsdl === null
             || empty($options[self::NTLM_USERNAME_OPTION_KEY] )
             || empty($options[self::NTLM_PASSWORD_OPTION_KEY])  ) {
@@ -44,11 +58,31 @@ class Client extends \SoapClient
     }
 
     /**
+     * @param bool $trueOrFalse
+     */
+    public function setRemoveNsFromXsiTypes($trueOrFalse)
+    {
+        $this->removeNsFromXsiTypes = (bool) $trueOrFalse;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRemoveNsFromXsiTypes()
+    {
+        return $this->removeNsFromXsiTypes;
+    }
+
+    /**
      * (non-PHPdoc)
      * @see SoapClient::__doRequest()
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
+        if ($this->getRemoveNsFromXsiTypes()) {
+            $request = $this->removeNameSpacedXsiObjectAttributeValues($request);
+        }
+
         $this->__last_request = $request;
 
         $ch = \curl_init($location);
@@ -73,6 +107,37 @@ class Client extends \SoapClient
         $response = \curl_exec($ch);
 
         return $response;
+    }
+
+    /**
+     * Finds any Elements with attribute xsi:object set, checks for namespaced attribute values, and moves that namespace to the parent node
+     * E.g. this:     <some_element xsi:type="some_ns:some_type" />
+     * would become:  <some_element xsi:type="some_type" xmlns="http://some_ns_uri"/>
+     * @param string $request
+     * @return string
+     */
+    public function removeNameSpacedXsiObjectAttributeValues(string $request)
+    {
+        $doc = new \DOMDocument();
+        $doc->loadXML($request);
+        $xpath = new \DOMXPath($doc);
+        $namespaces = $xpath->query('namespace::*', $doc->documentElement);
+        foreach ($namespaces as $node) {
+            /** @var \DOMNameSpaceNode  $node */
+            $prefix = $node->prefix;
+            $uri = $node->namespaceURI;
+            $elementsToFix = $xpath->query("//*[starts-with(@xsi:type, '$prefix')]");
+            foreach ($elementsToFix as $element) {
+                /** @var \DOMElement $element */
+                //set the namespace on the node
+                $element->setAttribute('xmlns', $uri);
+                //remove the namespace prefix from the xsi:type value
+                $newXsiType =  str_replace($prefix . ':', '',  $element->getAttribute('xsi:type'));
+                $element->setAttribute('xsi:type', $newXsiType);
+            }
+        }
+        return $doc->saveXML();
+
     }
 
 }
